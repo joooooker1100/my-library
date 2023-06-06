@@ -3,541 +3,157 @@ var Measurement = /** @class */ (function () {
         this.length = length;
         this.unit = unit;
     }
-    Measurement.prototype.convertToMeters = function () {
-        switch (this.unit) {
-            case 'nm':
-                this.length /= 1e9;
-                break;
-            case 'um':
-                this.length /= 1e6;
-                break;
-            case 'mm':
-                this.length /= 1000;
-                break;
-            case 'cm':
-                this.length /= 100;
-                break;
-            case 'm':
-                break;
-            case 'km':
-                this.length *= 1000;
-                break;
-            case 'mile':
-                this.length *= 1609.34;
-                break;
-            case 'yard':
-                this.length *= 0.9144;
-                break;
-            case 'dm':
-                this.length /= 10;
-                break;
-            case 'pm':
-                this.length /= 1e12;
-                break;
-            case 'fm':
-                this.length /= 1e15;
-                break;
-            case 'lightyear':
-                this.length *= 9.461e15;
-                break;
-            case 'lightsecond':
-                this.length *= 299792458;
-                break;
-            default:
-                console.log('Invalid unit of measurement!');
+    Measurement.prototype.validateUnit = function () {
+        var validUnits = ['mm', 'cm', 'm', 'km', 'mile', 'yard'];
+        if (!validUnits.includes(this.unit)) {
+            console.log('Invalid unit of measurement!');
+            return false;
         }
-        this.unit = 'm';
+        return true;
     };
-    Measurement.prototype.convertToMillimeters = function () {
-        switch (this.unit) {
-            case 'nm':
-                this.length *= 1e6;
-                break;
-            case 'um':
-                this.length *= 1000;
-                break;
+    Measurement.prototype.convertTo = function (unit) {
+        if (!this.validateUnit()) {
+            return;
+        }
+        switch (unit) {
             case 'mm':
+                this.length *= 1000;
+                this.unit = 'mm';
                 break;
             case 'cm':
-                this.length *= 10;
-                break;
-            case 'm':
-                this.length *= 1000;
-                break;
-            case 'km':
-                this.length *= 1e6;
-                break;
-            case 'mile':
-                this.length *= 1609344;
-                break;
-            case 'yard':
-                this.length *= 914.4;
-                break;
-            case 'dm':
                 this.length *= 100;
-                break;
-            case 'pm':
-                this.length *= 1e9;
-                break;
-            case 'fm':
-                this.length *= 1e12;
-                break;
-            case 'lightyear':
-                this.length *= 9.461e18;
-                break;
-            case 'lightsecond':
-                this.length *= 299792458000;
-                break;
-            default:
-                console.log('Invalid unit of measurement!');
-        }
-        this.unit = 'mm';
-    };
-    Measurement.prototype.convertToCentimeters = function () {
-        switch (this.unit) {
-            case 'nm':
-                this.length *= 1e7;
-                break;
-            case 'um':
-                this.length *= 10;
-                break;
-            case 'mm':
-                this.length *= 0.1;
-                break;
-            case 'cm':
+                this.unit = 'cm';
                 break;
             case 'm':
-                this.length *= 100;
+                this.length *= 0.001;
+                this.unit = 'm';
                 break;
             case 'km':
-                this.length *= 1e5;
+                this.length *= 0.000001;
+                this.unit = 'km';
                 break;
             case 'mile':
-                this.length *= 160934.4;
+                this.convertToMiles();
                 break;
             case 'yard':
-                this.length *= 91.44;
-                break;
-            case 'dm':
-                this.length *= 10;
-                break;
-            case 'pm':
-                this.length *= 1e10;
-                break;
-            case 'fm':
-                this.length *= 1e13;
-                break;
-            case 'lightyear':
-                this.length *= 9.461e17;
-                break;
-            case 'lightsecond':
-                this.length *= 29979245800;
+                this.convertToYard();
                 break;
             default:
                 console.log('Invalid unit of measurement!');
         }
-        this.unit = 'cm';
-    };
-    Measurement.prototype.convertToInches = function () {
-        switch (this.unit) {
-            case 'nm':
-                this.length *= 3.937e-8;
-                break;
-            case 'um':
-                this.length *= 3.937e-5;
-                break;
-            case 'mm':
-                this.length *= 0.03937;
-                break;
-            case 'cm':
-                this.length *= 0.3937;
-                break;
-            case 'm':
-                this.length *= 39.37;
-                break;
-            case 'km':
-                this.length *= 39370.1;
-                break;
-            case 'mile':
-                this.length *= 63360;
-                break;
-            case 'yard':
-                this.length *= 36;
-                break;
-            case 'dm':
-                this.length *= 3.937;
-                break;
-            case 'pm':
-                this.length *= 3.937e-11;
-                break;
-            case 'fm':
-                this.length *= 3.937e-14;
-                break;
-            case 'lightyear':
-                this.length *= 3.724e+17;
-                break;
-            case 'lightsecond':
-                this.length *= 1.864e+12;
-                break;
-            default:
-                console.log('Invalid unit of measurement!');
-        }
-        this.unit = 'inch';
-    };
-    Measurement.prototype.convertToFeet = function () {
-        switch (this.unit) {
-            case 'nm':
-                this.length *= 3.281e-9;
-                break;
-            case 'um':
-                this.length *= 3.281e-6;
-                break;
-            case 'mm':
-                this.length *= 0.003281;
-                break;
-            case 'cm':
-                this.length *= 0.03281;
-                break;
-            case 'm':
-                this.length *= 3.281;
-                break;
-            case 'km':
-                this.length *= 3280.84;
-                break;
-            case 'mile':
-                this.length *= 5280;
-                break;
-            case 'yard':
-                this.length *= 3;
-                break;
-            case 'dm':
-                this.length *= 0.3281;
-                break;
-            case 'pm':
-                this.length *= 3.281e-12;
-                break;
-            case 'fm':
-                this.length *= 3.281e-15;
-                break;
-            case 'lightyear':
-                this.length *= 3.104e+16;
-                break;
-            case 'lightsecond':
-                this.length *= 1.553e+11;
-                break;
-            default:
-                console.log('Invalid unit of measurement!');
-        }
-        this.unit = 'foot';
     };
     Measurement.prototype.convertToMiles = function () {
+        if (!this.validateUnit()) {
+            return;
+        }
         switch (this.unit) {
-            case 'nm':
-                this.length *= 6.2137e-13;
-                break;
-            case 'um':
-                this.length *= 6.2137e-10;
-                break;
             case 'mm':
-                this.length *= 6.2137e-7;
+                this.length *= 0.00000062137;
+                this.unit = 'mile';
                 break;
             case 'cm':
-                this.length *= 6.2137e-6;
+                this.length *= 0.0000062137;
+                this.unit = 'mile';
                 break;
             case 'm':
                 this.length *= 0.00062137;
+                this.unit = 'mile';
                 break;
             case 'km':
                 this.length *= 0.62137;
+                this.unit = 'mile';
                 break;
             case 'mile':
+                // No conversion needed, already in miles
                 break;
             case 'yard':
                 this.length *= 0.00056818;
-                break;
-            case 'dm':
-                this.length *= 0.000062137;
-                break;
-            case 'pm':
-                this.length *= 6.2137e-16;
-                break;
-            case 'fm':
-                this.length *= 6.2137e-19;
-                break;
-            case 'lightyear':
-                this.length *= 5.8785e-13;
-                break;
-            case 'lightsecond':
-                this.length *= 1.1717e-8;
+                this.unit = 'mile';
                 break;
             default:
                 console.log('Invalid unit of measurement!');
         }
-        this.unit = 'mile';
-    };
-    Measurement.prototype.convertToLightSecond = function () {
-        switch (this.unit) {
-            case 'nm':
-                this.length *= 3.3356e-24;
-                break;
-            case 'um':
-                this.length *= 3.3356e-21;
-                break;
-            case 'mm':
-                this.length *= 3.3356e-18;
-                break;
-            case 'cm':
-                this.length *= 3.3356e-17;
-                break;
-            case 'm':
-                this.length *= 3.3356e-16;
-                break;
-            case 'km':
-                this.length *= 3.3356e-13;
-                break;
-            case 'mile':
-                this.length *= 1.1717e-8;
-                break;
-            case 'yard':
-                this.length *= 3.3356e-16;
-                break;
-            case 'dm':
-                this.length *= 3.3356e-15;
-                break;
-            case 'pm':
-                this.length *= 3.3356e-27;
-                break;
-            case 'fm':
-                this.length *= 3.3356e-30;
-                break;
-            case 'lightyear':
-                this.length *= 1.057e-22;
-                break;
-            default:
-                console.log('Invalid unit of measurement!');
-        }
-        this.unit = 'lightsecond';
-    };
-    Measurement.prototype.convertToLightYear = function () {
-        switch (this.unit) {
-            case 'nm':
-                this.length *= 1.057e-22;
-                break;
-            case 'um':
-                this.length *= 1.057e-19;
-                break;
-            case 'mm':
-                this.length *= 1.057e-16;
-                break;
-            case 'cm':
-                this.length *= 1.057e-15;
-                break;
-            case 'm':
-                this.length *= 1.057e-14;
-                break;
-            case 'km':
-                this.length *= 1.057e-11;
-                break;
-            case 'mile':
-                this.length *= 3.724e-8;
-                break;
-            case 'yard':
-                this.length *= 1.057e-14;
-                break;
-            case 'dm':
-                this.length *= 1.057e-13;
-                break;
-            case 'pm':
-                this.length *= 1.057e-25;
-                break;
-            case 'fm':
-                this.length *= 1.057e-28;
-                break;
-            case 'lightsecond':
-                this.length *= 2.9979e-9;
-                break;
-            default:
-                console.log('Invalid unit of measurement!');
-        }
-        this.unit = 'lightyear';
-    };
-    Measurement.prototype.convertToFM = function () {
-        switch (this.unit) {
-            case 'nm':
-                this.length *= 1e+6;
-                break;
-            case 'um':
-                this.length *= 1e+9;
-                break;
-            case 'mm':
-                this.length *= 1e+12;
-                break;
-            case 'cm':
-                this.length *= 1e+13;
-                break;
-            case 'm':
-                this.length *= 1e+14;
-                break;
-            case 'km':
-                this.length *= 1e+17;
-                break;
-            case 'mile':
-                this.length *= 3.536e+8;
-                break;
-            case 'yard':
-                this.length *= 1e+14;
-                break;
-            case 'dm':
-                this.length *= 1e+15;
-                break;
-            case 'pm':
-                this.length *= 1e-9;
-                break;
-            case 'lightyear':
-                this.length *= 9.461e+21;
-                break;
-            case 'lightsecond':
-                this.length *= 2.9979e+23;
-                break;
-            default:
-                console.log('Invalid unit of measurement!');
-        }
-        this.unit = 'fm';
-    };
-    Measurement.prototype.convertToPM = function () {
-        switch (this.unit) {
-            case 'nm':
-                this.length *= 1e+3;
-                break;
-            case 'um':
-                this.length *= 1e+6;
-                break;
-            case 'mm':
-                this.length *= 1e+9;
-                break;
-            case 'cm':
-                this.length *= 1e+10;
-                break;
-            case 'm':
-                this.length *= 1e+11;
-                break;
-            case 'km':
-                this.length *= 1e+14;
-                break;
-            case 'mile':
-                this.length *= 3.527e+11;
-                break;
-            case 'yard':
-                this.length *= 1e+11;
-                break;
-            case 'dm':
-                this.length *= 1e+12;
-                break;
-            case 'pm':
-                this.length *= 1e-3;
-                break;
-            case 'lightyear':
-                this.length *= 9.461e+18;
-                break;
-            case 'lightsecond':
-                this.length *= 2.9979e+20;
-                break;
-            default:
-                console.log('Invalid unit of measurement!');
-        }
-        this.unit = 'pm';
-    };
-    Measurement.prototype.convertToDM = function () {
-        switch (this.unit) {
-            case 'nm':
-                this.length *= 1e+7;
-                break;
-            case 'um':
-                this.length *= 1e+4;
-                break;
-            case 'mm':
-                this.length *= 1e+1;
-                break;
-            case 'cm':
-                this.length *= 1e+0;
-                break;
-            case 'm':
-                this.length *= 1e-1;
-                break;
-            case 'km':
-                this.length *= 1e-4;
-                break;
-            case 'mile':
-                this.length *= 3.937e-1;
-                break;
-            case 'yard':
-                this.length *= 1e+0;
-                break;
-            case 'dm':
-                this.length *= 1e+1;
-                break;
-            case 'pm':
-                this.length *= 1e-11;
-                break;
-            case 'lightyear':
-                this.length *= 9.461e+16;
-                break;
-            case 'lightsecond':
-                this.length *= 2.9979e+18;
-                break;
-            default:
-                console.log('Invalid unit of measurement!');
-        }
-        this.unit = 'dm';
     };
     Measurement.prototype.convertToYard = function () {
+        if (!this.validateUnit()) {
+            return;
+        }
         switch (this.unit) {
-            case 'nm':
-                this.length *= 1.0936e-12;
-                break;
-            case 'um':
-                this.length *= 1.0936e-9;
-                break;
             case 'mm':
-                this.length *= 1.0936e-6;
+                this.length *= 0.0010936;
+                this.unit = 'yard';
                 break;
             case 'cm':
-                this.length *= 1.0936e-5;
+                this.length *= 0.010936;
+                this.unit = 'yard';
                 break;
             case 'm':
-                this.length *= 1.0936e-3;
+                this.length *= 1.0936;
+                this.unit = 'yard';
                 break;
             case 'km':
-                this.length *= 1.0936e-6;
+                this.length *= 1093.6;
+                this.unit = 'yard';
                 break;
             case 'mile':
-                this.length *= 1.0936e-3;
+                this.length *= 1760;
+                this.unit = 'yard';
                 break;
             case 'yard':
-                break;
-            case 'dm':
-                this.length *= 1.0936e-2;
-                break;
-            case 'pm':
-                this.length *= 1.0936e-16;
-                break;
-            case 'lightyear':
-                this.length *= 1.037e-12;
-                break;
-            case 'lightsecond':
-                this.length *= 3.2616e-8;
+                // No conversion needed, already in yards
                 break;
             default:
                 console.log('Invalid unit of measurement!');
         }
-        this.unit = 'yard';
+    };
+    Measurement.prototype.add = function () {
+        var values = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            values[_i] = arguments[_i];
+        }
+        for (var i = 0; i < values.length; i += 2) {
+            var num = parseFloat(values[i]);
+            var unit = values[i + 1];
+            var validUnits = ['mm', 'cm', 'm', 'km', 'mile', 'yard'];
+            if (!validUnits.includes(unit)) {
+                console.log('Invalid unit of measurement!');
+                return;
+            }
+            switch (unit) {
+                case 'mm':
+                    this.length += num * 0.001;
+                    break;
+                case 'cm':
+                    this.length += num * 0.01;
+                    break;
+                case 'm':
+                    this.length += num;
+                    break;
+                case 'km':
+                    this.length += num * 1000;
+                    break;
+                case 'mile':
+                    this.length += num * 1609.34;
+                    break;
+                case 'yard':
+                    this.length += num * 0.9144;
+                    break;
+                default:
+                    console.log('Invalid unit of measurement!');
+            }
+        }
     };
     return Measurement;
 }());
-// Example usage
-//   let myMeasurement = new Measurement(2000, 'nm');
-//   console.log(myMeasurement); // { length: 2000, unit: 'nm' }
-//   myMeasurement.convertToMeters();
-//   console.log(myMeasurement); // { length: 2e-6, unit: 'm' }
-//   myMeasurement.convertToMillimeters()
-//   console.log(myMeasurement);
+var myMeasurement = new Measurement(2, 'cm');
+console.log(myMeasurement); // { length: 2, unit: 'cm' }
+myMeasurement.convertTo('mile');
+console.log(myMeasurement); // { length: 0.0012427424, unit: 'mile' }
+myMeasurement.convertToMiles();
+console.log(myMeasurement); // { length: 0.0012427424, unit: 'mile' }
+myMeasurement.convertTo('yard');
+console.log(myMeasurement); // { length: 2116.8038400000003, unit: 'yard' }
+myMeasurement.add(2, 'mm', 5, 'mile');
+console.log(myMeasurement); // { length: 804686.75124, unit: 'yard' }
+myMeasurement.add('2mm+5mile');
+console.log(myMeasurement); // { length: 804686.75124, unit: 'yard' }
