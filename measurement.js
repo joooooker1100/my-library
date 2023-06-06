@@ -3,157 +3,151 @@ var Measurement = /** @class */ (function () {
         this.length = length;
         this.unit = unit;
     }
+    Measurement.convertTo = function (targetUnit, measurement) {
+        if (!measurement || !measurement.validateUnit()) {
+            throw new Error('Invalid measurement or unit');
+        }
+        var length = measurement.length;
+        var unit = measurement.unit;
+        switch (targetUnit) {
+            case 'mm':
+                return new Measurement(length * 1000, 'mm');
+            case 'cm':
+                return new Measurement(length * 100, 'cm');
+            case 'm':
+                return new Measurement(length * 0.001, 'm');
+            case 'km':
+                return new Measurement(length * 0.000001, 'km');
+            case 'mile':
+                return Measurement.convertToMiles(measurement);
+            case 'yard':
+                return Measurement.convertToYard(measurement);
+            default:
+                throw new Error('Invalid unit of measurement');
+        }
+    };
+    Measurement.convertToMiles = function (measurement) {
+        if (!measurement.validateUnit()) {
+            throw new Error('Invalid measurement or unit');
+        }
+        var length = measurement.length;
+        var unit = measurement.unit;
+        switch (unit) {
+            case 'mm':
+                return new Measurement(length * 0.00000062137, 'mile');
+            case 'cm':
+                return new Measurement(length * 0.0000062137, 'mile');
+            case 'm':
+                return new Measurement(length * 0.00062137, 'mile');
+            case 'km':
+                return new Measurement(length * 0.62137, 'mile');
+            case 'mile':
+                return measurement;
+            case 'yard':
+                return new Measurement(length * 0.00056818, 'mile');
+            default:
+                throw new Error('Invalid unit of measurement');
+        }
+    };
+    Measurement.convertToYard = function (measurement) {
+        if (!measurement.validateUnit()) {
+            throw new Error('Invalid measurement or unit');
+        }
+        var length = measurement.length;
+        var unit = measurement.unit;
+        switch (unit) {
+            case 'mm':
+                return new Measurement(length * 0.0010936, 'yard');
+            case 'cm':
+                return new Measurement(length * 0.010936, 'yard');
+            case 'm':
+                return new Measurement(length * 1.0936, 'yard');
+            case 'km':
+                return new Measurement(length * 1093.6, 'yard');
+            case 'mile':
+                return new Measurement(length * 1760, 'yard');
+            case 'yard':
+                return measurement;
+            default:
+                throw new Error('Invalid unit of measurement');
+        }
+    };
     Measurement.prototype.validateUnit = function () {
         var validUnits = ['mm', 'cm', 'm', 'km', 'mile', 'yard'];
         if (!validUnits.includes(this.unit)) {
-            console.log('Invalid unit of measurement!');
-            return false;
+            throw new Error('Invalid unit of measurement');
         }
         return true;
     };
-    Measurement.prototype.convertTo = function (unit) {
-        if (!this.validateUnit()) {
-            return;
-        }
-        switch (unit) {
-            case 'mm':
-                this.length *= 1000;
-                this.unit = 'mm';
-                break;
-            case 'cm':
-                this.length *= 100;
-                this.unit = 'cm';
-                break;
-            case 'm':
-                this.length *= 0.001;
-                this.unit = 'm';
-                break;
-            case 'km':
-                this.length *= 0.000001;
-                this.unit = 'km';
-                break;
-            case 'mile':
-                this.convertToMiles();
-                break;
-            case 'yard':
-                this.convertToYard();
-                break;
-            default:
-                console.log('Invalid unit of measurement!');
-        }
+    return Measurement;
+}());
+var MeasurementBuilder = /** @class */ (function () {
+    function MeasurementBuilder(length, unit) {
+        this.measurement = new Measurement(length, unit);
+    }
+    MeasurementBuilder.prototype.convertTo = function (unit) {
+        this.measurement = Measurement.convertTo(unit, this.measurement);
+        return this;
     };
-    Measurement.prototype.convertToMiles = function () {
-        if (!this.validateUnit()) {
-            return;
-        }
-        switch (this.unit) {
-            case 'mm':
-                this.length *= 0.00000062137;
-                this.unit = 'mile';
-                break;
-            case 'cm':
-                this.length *= 0.0000062137;
-                this.unit = 'mile';
-                break;
-            case 'm':
-                this.length *= 0.00062137;
-                this.unit = 'mile';
-                break;
-            case 'km':
-                this.length *= 0.62137;
-                this.unit = 'mile';
-                break;
-            case 'mile':
-                // No conversion needed, already in miles
-                break;
-            case 'yard':
-                this.length *= 0.00056818;
-                this.unit = 'mile';
-                break;
-            default:
-                console.log('Invalid unit of measurement!');
-        }
+    MeasurementBuilder.prototype.convertToMiles = function () {
+        this.measurement = Measurement.convertToMiles(this.measurement);
+        return this;
     };
-    Measurement.prototype.convertToYard = function () {
-        if (!this.validateUnit()) {
-            return;
-        }
-        switch (this.unit) {
-            case 'mm':
-                this.length *= 0.0010936;
-                this.unit = 'yard';
-                break;
-            case 'cm':
-                this.length *= 0.010936;
-                this.unit = 'yard';
-                break;
-            case 'm':
-                this.length *= 1.0936;
-                this.unit = 'yard';
-                break;
-            case 'km':
-                this.length *= 1093.6;
-                this.unit = 'yard';
-                break;
-            case 'mile':
-                this.length *= 1760;
-                this.unit = 'yard';
-                break;
-            case 'yard':
-                // No conversion needed, already in yards
-                break;
-            default:
-                console.log('Invalid unit of measurement!');
-        }
+    MeasurementBuilder.prototype.convertToYard = function () {
+        this.measurement = Measurement.convertToYard(this.measurement);
+        return this;
     };
-    Measurement.prototype.add = function () {
+    MeasurementBuilder.prototype.convertToKm = function () {
+        this.measurement = Measurement.convertTo('km', this.measurement);
+        return this;
+    };
+    MeasurementBuilder.prototype.convertToCm = function () {
+        this.measurement = Measurement.convertTo('cm', this.measurement);
+        return this;
+    };
+    MeasurementBuilder.prototype.convertToMm = function () {
+        this.measurement = Measurement.convertTo('mm', this.measurement);
+        return this;
+    };
+    MeasurementBuilder.prototype.convertToM = function () {
+        this.measurement = Measurement.convertTo('m', this.measurement);
+        return this;
+    };
+    MeasurementBuilder.prototype.add = function () {
         var values = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             values[_i] = arguments[_i];
         }
         for (var i = 0; i < values.length; i += 2) {
-            var num = parseFloat(values[i]);
+            var num = Number(values[i]);
             var unit = values[i + 1];
-            var validUnits = ['mm', 'cm', 'm', 'km', 'mile', 'yard'];
-            if (!validUnits.includes(unit)) {
-                console.log('Invalid unit of measurement!');
-                return;
+            this.measurement = Measurement.convertTo(unit, this.measurement);
+            if (!this.measurement.validateUnit()) {
+                throw new Error('Invalid measurement or unit');
             }
-            switch (unit) {
-                case 'mm':
-                    this.length += num * 0.001;
-                    break;
-                case 'cm':
-                    this.length += num * 0.01;
-                    break;
-                case 'm':
-                    this.length += num;
-                    break;
-                case 'km':
-                    this.length += num * 1000;
-                    break;
-                case 'mile':
-                    this.length += num * 1609.34;
-                    break;
-                case 'yard':
-                    this.length += num * 0.9144;
-                    break;
-                default:
-                    console.log('Invalid unit of measurement!');
-            }
+            this.measurement.length += num;
         }
+        return this;
     };
-    return Measurement;
+    MeasurementBuilder.prototype.build = function () {
+        return this.measurement;
+    };
+    return MeasurementBuilder;
 }());
-var myMeasurement = new Measurement(2, 'cm');
-console.log(myMeasurement); // { length: 2, unit: 'cm' }
-myMeasurement.convertTo('mile');
-console.log(myMeasurement); // { length: 0.0012427424, unit: 'mile' }
-myMeasurement.convertToMiles();
-console.log(myMeasurement); // { length: 0.0012427424, unit: 'mile' }
-myMeasurement.convertTo('yard');
-console.log(myMeasurement); // { length: 2116.8038400000003, unit: 'yard' }
-myMeasurement.add(2, 'mm', 5, 'mile');
-console.log(myMeasurement); // { length: 804686.75124, unit: 'yard' }
-myMeasurement.add('2mm+5mile');
-console.log(myMeasurement); // { length: 804686.75124, unit: 'yard' }
+var myMeasurement = new MeasurementBuilder(2, 'cm')
+    .convertToMiles()
+    .convertToYard()
+    .convertToKm()
+    .convertToMm()
+    .convertToCm()
+    .convertToM()
+    .convertTo('mile')
+    .convertTo('yard')
+    .convertTo('km')
+    .convertTo('mm')
+    .convertTo('cm')
+    .convertTo('m')
+    .add(5, 'km', 2, 'mm')
+    .add('7', 'km', '6', 'mm')
+    .build();
+console.log(myMeasurement);
